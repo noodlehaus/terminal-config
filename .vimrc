@@ -93,6 +93,7 @@ endif
 
 " disable markdown folds
 let g:vim_markdown_folding_disabled=1
+let g:markdown_fenced_languages = ['html', 'js=javascript', 'php', 'css', 'ruby']
 
 " type-specific settings
 autocmd FileType sh setlocal noexpandtab
@@ -108,6 +109,7 @@ au BufNewFile,BufRead *.phtml set ft=php
 let $BASH_ENV="~/.bash_aliases"
 
 " per ile formatting
+autocmd FileType python setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd FileType php setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd FileType phtml setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
