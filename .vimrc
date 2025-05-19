@@ -1,16 +1,22 @@
 " vim-plug
 call plug#begin()
 
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'dracula/vim', { 'name': 'dracula' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-" Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
-" Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'
+Plug 'dracula/vim', { 'name': 'dracula' }
 
 call plug#end()
+
+" :CocInstall <plugin>
+" coc-html
+" coc-tsserver
+" coc-json
+" coc-css
 
 syntax on
 filetype plugin indent on
@@ -34,6 +40,7 @@ set hlsearch
 set ignorecase
 set incsearch
 set laststatus=2
+" set mouse=a
 set number
 set nobackup
 set nocompatible
@@ -59,9 +66,6 @@ set updatetime=100
 set wildmenu
 set wildmode=list:longest
 
-" highlight cursorline term=NONE cterm=NONE ctermbg=237
-" highlight cursorlinenr term=NONE cterm=NONE
-
 " trying to improve syntax highlighting
 syntax sync minlines=100
 syntax sync maxlines=300
@@ -78,6 +82,9 @@ nnoremap <leader>vv :source ~/.vimrc<cr>
 
 " easy colon mode
 nnoremap ; :
+
+" toggle line numbers
+nnoremap <leader>nn :set nonumber! \| set relativenumber!<cr>
 
 " paste toggle
 nnoremap <leader>pp :set paste!<cr>
@@ -112,27 +119,12 @@ autocmd BufWritePre *.* :%s/\s\+$//e
 " phtml handling
 autocmd BufNewFile,BufRead *.phtml set ft=php
 
+" git gutter
+let g:gitgutter_map_keys = 0
+
+nmap <leader>gg :GitGutterToggle<cr>
+
 " coc mappings
-nnoremap <silent> K :call ShowDocumentation()<CR>
-
-nmap <leader>rn <Plug>(coc-rename)
-
-nmap <silent><nowait> gd <Plug>(coc-definition)
-nmap <silent><nowait> gr <Plug>(coc-references)
-nmap <silent><nowait> gy <Plug>(coc-type-definition)
-nmap <silent><nowait> gi <Plug>(coc-implementation)
-
-nnoremap <silent><nowait> [[ <Plug>(coc-diagnostic-prev)
-nnoremap <silent><nowait> ]] <Plug>(coc-diagnostic-next)
-nnoremap <silent><nowait> `` :CocDiagnostics<cr>
-
-" c-j either moves down the list, or trigger the list
-inoremap <silent><expr> <c-j> coc#pum#visible() ? coc#pum#next(1) : coc#refresh()
-" c-k moves up the list, or also triggers the list
-inoremap <silent><expr> <c-k> coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()
-" accept the selected completion
-inoremap <silent><expr> <tab> coc#pum#visible() ? coc#pum#confirm() : "\<tab>"
-
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
@@ -141,14 +133,36 @@ function! ShowDocumentation()
   endif
 endfunction
 
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+nmap <leader>rn <Plug>(coc-rename)
+
+" open defs in splits
+nmap <silent><nowait> gy <Plug>(coc-type-definition)
+nmap <silent><nowait> gi <Plug>(coc-implementation)
+nmap <silent><nowait> gr <Plug>(coc-references)
+nmap <silent><nowait> gd <Plug>(coc-definition)
+nmap <silent><nowait> gv :call CocAction('jumpDefinition', 'vsplit')<CR>
+nmap <silent><nowait> gs :call CocAction('jumpDefinition', 'split')<CR>
+
+" diagnostics
+nnoremap <silent><nowait> [[ <Plug>(coc-diagnostic-prev)
+nnoremap <silent><nowait> ]] <Plug>(coc-diagnostic-next)
+nnoremap <silent><nowait> `` :CocDiagnostics<CR>
+
+" c-j either moves down the list, or trigger the list
+inoremap <silent><expr> <c-j> coc#pum#visible() ? coc#pum#next(1) : coc#refresh()
+" c-k moves up the list, or also triggers the list
+inoremap <silent><expr> <c-k> coc#pum#visible() ? coc#pum#prev(1) : coc#refresh()
+" accept the selected completion
+inoremap <silent><expr> <tab> coc#pum#visible() ? coc#pum#confirm() : "\<tab>"
+
 " Remap <C-f> and <C-b> to scroll float windows/popups
 if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  nnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
+  nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
+  inoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-d>"
+  inoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-u>"
 endif
 
 " coc-prettier
