@@ -3,11 +3,11 @@ alias ll='ls -l'
 
 # git prompt
 parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \(\1\)/'
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
 # clean prompt
-export PS1="\w\$(parse_git_branch) \$ "
+export PS1="[$(parse_git_branch)]\n\w \$ "
 
 # python
 alias initenv='[ ! -e .venv ] && python3 -m venv .venv || echo "Environment already present."'
